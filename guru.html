@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Guru - Sistem Absensi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <nav class="bg-blue-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="text-xl font-bold">Portal Guru</div>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm font-medium transition">
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Halo, <span id="guruName">Bapak/Ibu Guru</span>!</h2>
+                <p class="text-gray-500 mt-1">Selamat datang di panel kontrol absensi.</p>
+            </div>
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">👨‍🏫</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-blue-500 text-center">
+                <div class="text-5xl mb-4">📷</div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Mulai Absensi</h3>
+                <p class="text-gray-500 text-sm mb-6">Buka kamera untuk scan barcode ID card siswa.</p>
+                <a href="index.html" class="inline-block w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition">
+                    Buka Scanner Barcode
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-emerald-500 text-center">
+                <div class="text-5xl mb-4">📋</div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Rekap Kelas</h3>
+                <p class="text-gray-500 text-sm mb-6">Pantau siapa saja yang belum absen hari ini.</p>
+                <button class="w-full bg-emerald-100 text-emerald-700 font-medium py-3 rounded-lg hover:bg-emerald-200 transition cursor-not-allowed">
+                    Fitur Segera Hadir
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- SESSION GUARD ---
+        const session = JSON.parse(localStorage.getItem('userSession'));
+        if (!session || session.role !== 'guru') {
+            alert("Akses ditolak! Silakan login sebagai Guru.");
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('guruName').innerText = session.identitas;
+        }
+
+        function logout() {
+            localStorage.removeItem('userSession');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
