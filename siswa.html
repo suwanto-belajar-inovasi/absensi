@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Siswa - Sistem Absensi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen pb-10">
+
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-b-3xl px-6 pt-10 pb-16 shadow-lg relative">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-blue-100 text-sm">Selamat Datang,</p>
+                <h1 class="text-2xl font-bold mt-1" id="siswaName">Loading...</h1>
+                <p class="text-sm mt-1 bg-white/20 inline-block px-3 py-1 rounded-full backdrop-blur-sm" id="siswaNIS">NIS: -</p>
+            </div>
+            <button onclick="logout()" class="p-2 bg-white/20 rounded-full hover:bg-white/30 backdrop-blur-sm transition">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <main class="max-w-md mx-auto px-4 -mt-8 relative z-10">
+        
+        <div class="bg-white rounded-2xl shadow-md p-5 mb-4">
+            <h2 class="text-gray-500 text-sm font-medium mb-3">Status Hari Ini</h2>
+            
+            <div class="flex items-center gap-4 p-4 bg-green-50 rounded-xl border border-green-100">
+                <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl">✓</div>
+                <div>
+                    <h3 class="text-green-800 font-bold text-lg">Hadir Tepat Waktu</h3>
+                    <p class="text-green-600 text-sm">Tercatat pukul 06:45 WIB</p>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400 text-center mt-3">*Ini adalah data simulasi UI</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-md p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-gray-800 font-bold">Riwayat Terakhir</h2>
+                <a href="#" class="text-sm text-blue-600 font-medium">Lihat Semua</a>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                    <div>
+                        <p class="text-gray-800 font-medium">05 Apr 2026</p>
+                        <p class="text-gray-500 text-sm">Masuk: 06:50 | Pulang: 15:10</p>
+                    </div>
+                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-medium">Hadir</span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                    <div>
+                        <p class="text-gray-800 font-medium">04 Apr 2026</p>
+                        <p class="text-gray-500 text-sm">Masuk: 07:15 | Pulang: 15:10</p>
+                    </div>
+                    <span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded font-medium">Terlambat</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- SESSION GUARD ---
+        const session = JSON.parse(localStorage.getItem('userSession'));
+        if (!session || session.role !== 'siswa') {
+            alert("Akses ditolak! Silakan login sebagai Siswa.");
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('siswaName').innerText = session.identitas;
+            document.getElementById('siswaNIS').innerText = `NIS: ${session.username}`;
+        }
+
+        function logout() {
+            localStorage.removeItem('userSession');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
