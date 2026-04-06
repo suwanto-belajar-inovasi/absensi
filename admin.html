@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Sistem Absensi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <div class="flex h-screen overflow-hidden">
+        <aside class="w-64 bg-slate-800 text-white flex flex-col hidden md:flex">
+            <div class="h-16 flex items-center justify-center border-b border-slate-700">
+                <h1 class="text-xl font-bold tracking-wider">PANEL ADMIN</h1>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#" class="flex items-center px-4 py-3 bg-blue-600 rounded-lg text-white font-medium">
+                    <span>📊 Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition">
+                    <span>👥 Data Siswa</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition">
+                    <span>📅 Laporan Absensi</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition">
+                    <span>⚙️ Pengaturan</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-slate-700">
+                <button onclick="logout()" class="w-full flex items-center justify-center px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition">
+                    <span>🚪 Keluar</span>
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6">
+                <h2 class="text-xl font-semibold text-gray-800">Ringkasan Hari Ini</h2>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500" id="adminName">Loading...</span>
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold">A</div>
+                </div>
+            </header>
+
+            <main class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
+                        <p class="text-sm text-gray-500 font-medium">Total Siswa</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">150</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-green-500">
+                        <p class="text-sm text-gray-500 font-medium">Hadir Hari Ini</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">142</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-red-500">
+                        <p class="text-sm text-gray-500 font-medium">Terlambat/Alpa</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">8</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Log Absensi Terbaru</h3>
+                    <p class="text-gray-500 text-sm italic">Tabel data real-time akan ditambahkan di tahap integrasi API selanjutnya.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- SESSION GUARD ---
+        const session = JSON.parse(localStorage.getItem('userSession'));
+        if (!session || session.role !== 'admin') {
+            alert("Akses ditolak! Silakan login sebagai Admin.");
+            window.location.href = 'login.html'; // Lempar kembali ke login
+        } else {
+            // Tampilkan nama admin
+            document.getElementById('adminName').innerText = session.identitas;
+        }
+
+        // Fungsi Logout
+        function logout() {
+            localStorage.removeItem('userSession');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
