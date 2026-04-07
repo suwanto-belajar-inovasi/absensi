@@ -12,37 +12,57 @@
             #printArea, #printArea * { visibility: visible; }
             #printArea { position: absolute; left: 0; top: 0; width: 100%; }
         }
+        .card-id { background-image: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
     </style>
 </head>
-<body class="bg-gray-50 p-6 font-sans">
+<body class="bg-slate-50 p-6 font-sans text-slate-800">
     
-    <div class="max-w-5xl mx-auto">
-        <header class="flex justify-between items-center mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Panel Admin</h1>
-                <p class="text-gray-500" id="userName">Belajar Inovasi</p>
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-8 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center text-white font-bold text-xl">BI</div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-blue-900">Dashboard Admin</h1>
+                    <p class="text-slate-500 font-medium text-sm">Belajar Inovasi System</p>
+                </div>
             </div>
-            <div class="flex gap-2">
-                <a href="index.html" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">📷 Buka Scanner</a>
-                <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600">Keluar</button>
+            <div class="flex gap-3">
+                <a href="index.html" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:bg-blue-700 transition font-bold flex items-center gap-2">📷 Buka Scanner</a>
+                <button onclick="logout()" class="bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl hover:bg-red-500 hover:text-white transition font-bold">Keluar</button>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-lg mb-2">🪪 Cetak Kartu Login Barcode</h3>
-                <p class="text-sm text-gray-500 mb-4">Print kartu ID siswa dengan barcode terintegrasi.</p>
-                <button onclick="cetakKartu()" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Cetak Semua Kartu Siswa</button>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="statsContainer">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-blue-500"><p class="text-sm text-slate-500 font-bold mb-1">Total Pegawai</p><h3 class="text-3xl font-black" id="statPegawai">-</h3></div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-indigo-500"><p class="text-sm text-slate-500 font-bold mb-1">Total Siswa</p><h3 class="text-3xl font-black" id="statSiswa">-</h3></div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-emerald-500"><p class="text-sm text-slate-500 font-bold mb-1">Hari Aktif</p><h3 class="text-3xl font-black" id="statHari">-</h3></div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-orange-500">
+                <p class="text-sm text-slate-500 font-bold mb-1">Persentase Kehadiran</p>
+                <div class="flex gap-2 mt-2">
+                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold" id="statMasuk">M: -%</span>
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold" id="statIzin">I: -%</span>
+                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded font-bold" id="statAlpha">A: -%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 mb-4 text-xl">🪪</div>
+                <h3 class="font-extrabold text-lg mb-1">Cetak Kartu Login Barcode</h3>
+                <p class="text-sm text-slate-500 mb-5">Print ID Card resmi ber-barcode untuk siswa.</p>
+                <button onclick="cetakKartu()" class="w-full bg-indigo-600 text-white py-3 font-bold rounded-xl hover:bg-indigo-700 transition">Mulai Cetak Kartu</button>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-lg mb-2">📊 Cetak Rekap Absensi</h3>
-                <div class="grid grid-cols-2 gap-2 mb-4 text-sm">
-                    <input type="date" id="startDate" class="border p-2 rounded" title="Dari Tanggal">
-                    <input type="date" id="endDate" class="border p-2 rounded" title="Sampai Tanggal">
-                    <input type="text" id="filterKelas" placeholder="Kelas (kosong=Semua)" class="border p-2 rounded col-span-2">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 mb-4 text-xl">📊</div>
+                <h3 class="font-extrabold text-lg mb-1">Cetak Rekap Absensi</h3>
+                <div class="grid grid-cols-2 gap-3 mb-5 text-sm">
+                    <div><label class="text-xs font-bold text-slate-500">Dari Tanggal</label><input type="date" id="startDate" class="w-full border border-slate-300 p-2.5 rounded-lg mt-1 outline-none focus:border-emerald-500"></div>
+                    <div><label class="text-xs font-bold text-slate-500">Sampai Tanggal</label><input type="date" id="endDate" class="w-full border border-slate-300 p-2.5 rounded-lg mt-1 outline-none focus:border-emerald-500"></div>
+                    <div class="col-span-2"><input type="text" id="filterKelas" placeholder="Pilih Kelas (Kosongkan untuk Semua Kelas)" class="w-full border border-slate-300 p-2.5 rounded-lg outline-none focus:border-emerald-500"></div>
                 </div>
-                <button onclick="cetakRekap()" class="w-full bg-emerald-600 text-white py-2 rounded hover:bg-emerald-700">Tarik Data & Cetak Tabel</button>
+                <button onclick="cetakRekap()" class="w-full bg-emerald-600 text-white py-3 font-bold rounded-xl hover:bg-emerald-700 transition">Tarik & Cetak PDF</button>
             </div>
         </div>
     </div>
@@ -55,9 +75,24 @@
         const session = JSON.parse(localStorage.getItem('userSession'));
         
         if (!session || session.role !== 'admin') window.location.href = 'login.html';
-        document.getElementById('userName').innerText = session.identitas;
 
-        // FUNGSI CETAK KARTU BARCODE
+        // 1. Muat Dashboard Stats Saat Buka Halaman
+        window.onload = async () => {
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_dashboard_admin', api_key: API_KEY }) });
+                const result = await res.json();
+                if(result.success) {
+                    document.getElementById('statPegawai').innerText = result.data.totalPegawai;
+                    document.getElementById('statSiswa').innerText = result.data.totalSiswa;
+                    document.getElementById('statHari').innerText = result.data.hariAktif;
+                    document.getElementById('statMasuk').innerText = `M: ${result.data.persentase.masuk}%`;
+                    document.getElementById('statIzin').innerText = `I: ${result.data.persentase.izin}%`;
+                    document.getElementById('statAlpha').innerText = `A: ${result.data.persentase.alpha}%`;
+                }
+            } catch (e) { console.log("Gagal muat stats"); }
+        };
+
+        // 2. FUNGSI CETAK KARTU (KOP LEMBAGA BARU)
         async function cetakKartu() {
             document.body.style.cursor = 'wait';
             try {
@@ -66,13 +101,29 @@
                 
                 if(result.success) {
                     const printArea = document.getElementById('printArea');
-                    let html = `<div class="grid grid-cols-2 gap-4 p-4">`;
+                    let html = `<div class="p-4" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">`;
                     result.data.forEach(s => {
                         html += `
-                        <div class="border-2 border-gray-800 p-4 rounded-xl w-[85mm] h-[55mm] inline-block" style="page-break-inside: avoid;">
-                            <h3 class="text-center font-bold text-sm">KARTU PELAJAR</h3>
-                            <p class="text-xs">Nama: ${s.nama}<br>Kelas: ${s.kelas}<br>NIS: ${s.nis}</p>
-                            <svg class="barcode w-full h-12 mt-2" jsbarcode-value="${s.nis}" jsbarcode-displayvalue="false"></svg>
+                        <div class="card-id border border-slate-300 rounded-xl overflow-hidden w-[85mm] h-[55mm] relative shadow-sm" style="page-break-inside: avoid; border: 2px solid #1e3a8a;">
+                            <div class="bg-white border-b-2 border-blue-800 p-2 flex items-center gap-2">
+                                <div class="w-8 h-8 bg-blue-700 text-white rounded-full flex items-center justify-center font-bold text-[10px]">BI</div>
+                                <div class="leading-tight text-center flex-1">
+                                    <h2 class="font-bold text-[9px] uppercase text-slate-700">Yayasan Pendidikan</h2>
+                                    <h1 class="font-extrabold text-[13px] text-blue-900 uppercase">BELAJAR INOVASI</h1>
+                                    <p class="text-[6.5px] text-slate-600">Jl. Pendidikan No. 1, Surabaya | Telp: 031-123456</p>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-center font-bold text-slate-800 text-[10px] mb-2 uppercase tracking-widest bg-yellow-300 rounded inline-block px-2 mx-auto border border-yellow-400" style="display:block; width:fit-content;">KARTU PELAJAR</p>
+                                <table class="text-[10px] font-bold text-slate-800 w-full mb-1">
+                                    <tr><td class="w-10">Nama</td><td>: ${s.nama}</td></tr>
+                                    <tr><td>NIS</td><td>: ${s.nis}</td></tr>
+                                    <tr><td>Kelas</td><td>: ${s.kelas}</td></tr>
+                                </table>
+                            </div>
+                            <div class="absolute bottom-2 left-0 w-full text-center bg-white py-1 border-t border-slate-200">
+                                <svg class="barcode h-8 w-11/12 mx-auto" jsbarcode-value="${s.nis}" jsbarcode-displayvalue="false" jsbarcode-margin="0"></svg>
+                            </div>
                         </div>`;
                     });
                     html += `</div>`;
@@ -89,8 +140,7 @@
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
             const kelas = document.getElementById('filterKelas').value || "Semua";
-
-            if(!start || !end) return alert("Pilih tanggal awal dan akhir!");
+            if(!start || !end) return alert("Pilih tanggal!");
             document.body.style.cursor = 'wait';
 
             try {
@@ -100,21 +150,23 @@
                 if(result.success) {
                     const printArea = document.getElementById('printArea');
                     let html = `
-                    <div class="p-8">
-                        <h2 class="text-2xl font-bold mb-4 text-center">Laporan Absensi (Belajar Inovasi)</h2>
-                        <p class="mb-4 text-center">Periode: ${start} s/d ${end} | Kelas: ${kelas}</p>
-                        <table class="w-full border-collapse border border-gray-400 text-sm text-left">
-                            <thead><tr class="bg-gray-100"><th class="border border-gray-400 p-2">Tanggal</th><th class="border border-gray-400 p-2">NIS</th><th class="border border-gray-400 p-2">Nama</th><th class="border border-gray-400 p-2">Kelas</th><th class="border border-gray-400 p-2">In</th><th class="border border-gray-400 p-2">Out</th><th class="border border-gray-400 p-2">Status</th></tr></thead>
+                    <div class="p-8 bg-white text-black font-sans">
+                        <div class="text-center border-b-4 border-double border-blue-900 pb-4 mb-6">
+                            <h2 class="text-2xl font-extrabold uppercase">Laporan Kehadiran Siswa</h2>
+                            <h3 class="text-lg font-bold">Lembaga Pendidikan Belajar Inovasi</h3>
+                            <p class="text-sm">Periode: ${start} s/d ${end} | Kelas: ${kelas}</p>
+                        </div>
+                        <table class="w-full border-collapse border border-slate-800 text-sm text-left">
+                            <thead><tr class="bg-slate-200"><th class="border border-slate-800 p-2">Tanggal</th><th class="border border-slate-800 p-2">NIS</th><th class="border border-slate-800 p-2">Nama</th><th class="border border-slate-800 p-2">Kelas</th><th class="border border-slate-800 p-2">Masuk</th><th class="border border-slate-800 p-2">Pulang</th><th class="border border-slate-800 p-2">Status</th></tr></thead>
                             <tbody>`;
                     result.data.forEach(d => {
-                        html += `<tr><td class="border border-gray-400 p-2">${d.tanggal}</td><td class="border border-gray-400 p-2">${d.nis}</td><td class="border border-gray-400 p-2">${d.nama}</td><td class="border border-gray-400 p-2">${d.kelas}</td><td class="border border-gray-400 p-2">${d.masuk}</td><td class="border border-gray-400 p-2">${d.pulang}</td><td class="border border-gray-400 p-2">${d.status}</td></tr>`;
+                        html += `<tr><td class="border border-slate-800 p-2">${d.tanggal}</td><td class="border border-slate-800 p-2">${d.nis}</td><td class="border border-slate-800 p-2">${d.nama}</td><td class="border border-slate-800 p-2">${d.kelas}</td><td class="border border-slate-800 p-2 text-center font-mono">${d.masuk}</td><td class="border border-slate-800 p-2 text-center font-mono">${d.pulang}</td><td class="border border-slate-800 p-2 font-bold">${d.status}</td></tr>`;
                     });
                     html += `</tbody></table></div>`;
-                    
                     printArea.innerHTML = html; printArea.classList.remove('hidden');
                     window.print(); printArea.classList.add('hidden');
                 }
-            } catch (e) { alert("Gagal mengambil data"); }
+            } catch (e) { alert("Error API"); }
             document.body.style.cursor = 'default';
         }
 
