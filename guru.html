@@ -3,66 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru - Sistem Absensi</title>
+    <title>Guru - Belajar Inovasi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-
-    <nav class="bg-blue-700 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="text-xl font-bold">Portal Guru</div>
-                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm font-medium transition">
-                    Keluar
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <main class="max-w-4xl mx-auto px-4 py-8">
-        <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 flex items-center justify-between">
+<body class="bg-gray-50 p-6 font-sans">
+    
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">Halo, <span id="guruName">Bapak/Ibu Guru</span>!</h2>
-                <p class="text-gray-500 mt-1">Selamat datang di panel kontrol absensi.</p>
+                <h1 class="text-2xl font-bold text-gray-800" id="userName">Bapak/Ibu Guru</h1>
+                <p class="text-gray-500 text-sm">Akses Kelas: <span id="kelasAkses" class="font-bold"></span></p>
             </div>
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">👨‍🏫</div>
-        </div>
+            <div class="flex gap-2">
+                <a href="index.html" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">📷 Absen Kelas</a>
+                <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600">Keluar</button>
+            </div>
+        </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-blue-500 text-center">
-                <div class="text-5xl mb-4">📷</div>
-                <h3 class="text-lg font-bold text-gray-800 mb-2">Mulai Absensi</h3>
-                <p class="text-gray-500 text-sm mb-6">Buka kamera untuk scan barcode ID card siswa.</p>
-                <a href="index.html" class="inline-block w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition">
-                    Buka Scanner Barcode
-                </a>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h3 class="font-bold mb-2">🪪 Cetak Kartu Kelas Saya</h3>
+                <button onclick="cetakKartu()" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Cetak Barcode Siswa</button>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-emerald-500 text-center">
-                <div class="text-5xl mb-4">📋</div>
-                <h3 class="text-lg font-bold text-gray-800 mb-2">Rekap Kelas</h3>
-                <p class="text-gray-500 text-sm mb-6">Pantau siapa saja yang belum absen hari ini.</p>
-                <button class="w-full bg-emerald-100 text-emerald-700 font-medium py-3 rounded-lg hover:bg-emerald-200 transition cursor-not-allowed">
-                    Fitur Segera Hadir
-                </button>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h3 class="font-bold mb-2">📊 Cetak Rekap Kelas Saya</h3>
+                <div class="flex gap-2 mb-4">
+                    <input type="date" id="startDate" class="border p-2 rounded w-full">
+                    <input type="date" id="endDate" class="border p-2 rounded w-full">
+                </div>
+                <button onclick="cetakRekap()" class="w-full bg-emerald-600 text-white py-2 rounded hover:bg-emerald-700">Tarik & Cetak Data</button>
             </div>
         </div>
-    </main>
+    </div>
+
+    <div id="printArea" class="hidden bg-white"></div>
 
     <script>
-        // --- SESSION GUARD ---
+        const API_URL = "https://script.google.com/macros/s/AKfycbzvIncRef44NK6ayX0F7TSht0qTYVEwZszpzVRxSd7nHOCU01bg3yuuOyI6VbHDG4Oq/exec"; 
+        const API_KEY = "belajarinovasi_123";
         const session = JSON.parse(localStorage.getItem('userSession'));
-        if (!session || session.role !== 'guru') {
-            alert("Akses ditolak! Silakan login sebagai Guru.");
-            window.location.href = 'login.html';
-        } else {
-            document.getElementById('guruName').innerText = session.identitas;
+        
+        if (!session || session.role !== 'guru') window.location.href = 'login.html';
+        document.getElementById('userName').innerText = session.identitas;
+        document.getElementById('kelasAkses').innerText = session.kelas_akses;
+
+        async function cetakKartu() {
+            document.body.style.cursor = 'wait';
+            try {
+                // Backend otomatis memfilter berdasarkan kelas_akses Guru (Bisa multikelas)
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa_by_kelas', api_key: API_KEY, kelas_akses: session.kelas_akses })});
+                const result = await res.json();
+                
+                if(result.success && result.data.length > 0) {
+                    const printArea = document.getElementById('printArea');
+                    let html = `<div class="grid grid-cols-2 gap-4 p-4">`;
+                    result.data.forEach(s => {
+                        html += `
+                        <div class="border-2 border-gray-800 p-4 rounded-xl w-[85mm] h-[55mm] inline-block" style="page-break-inside: avoid;">
+                            <h3 class="text-center font-bold text-sm">KARTU PELAJAR</h3>
+                            <p class="text-xs">Nama: ${s.nama}<br>Kelas: ${s.kelas}<br>NIS: ${s.nis}</p>
+                            <svg class="barcode w-full h-12 mt-2" jsbarcode-value="${s.nis}" jsbarcode-displayvalue="false"></svg>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                    printArea.innerHTML = html; printArea.classList.remove('hidden');
+                    JsBarcode(".barcode").init();
+                    setTimeout(() => { window.print(); printArea.classList.add('hidden'); }, 500);
+                } else alert("Tidak ada data siswa untuk kelas ini.");
+            } catch (e) { alert("Error API"); }
+            document.body.style.cursor = 'default';
         }
 
-        function logout() {
-            localStorage.removeItem('userSession');
-            window.location.href = 'login.html';
+        async function cetakRekap() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            if(!start || !end) return alert("Pilih tanggal awal dan akhir!");
+            document.body.style.cursor = 'wait';
+
+            try {
+                // Guru mengirim filterKelas berdasarkan session-nya
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_rekap', api_key: API_KEY, startDate: start, endDate: end, filterKelas: session.kelas_akses })});
+                const result = await res.json();
+
+                if(result.success) {
+                    const printArea = document.getElementById('printArea');
+                    let html = `
+                    <div class="p-8">
+                        <h2 class="text-2xl font-bold mb-4 text-center">Rekap Absensi Kelas ${session.kelas_akses}</h2>
+                        <table class="w-full border-collapse border border-gray-400 text-sm text-left">
+                            <thead><tr class="bg-gray-100"><th class="border border-gray-400 p-2">Tanggal</th><th class="border border-gray-400 p-2">NIS</th><th class="border border-gray-400 p-2">Nama</th><th class="border border-gray-400 p-2">In</th><th class="border border-gray-400 p-2">Out</th><th class="border border-gray-400 p-2">Status</th></tr></thead>
+                            <tbody>`;
+                    result.data.forEach(d => {
+                        html += `<tr><td class="border border-gray-400 p-2">${d.tanggal}</td><td class="border border-gray-400 p-2">${d.nis}</td><td class="border border-gray-400 p-2">${d.nama}</td><td class="border border-gray-400 p-2">${d.masuk}</td><td class="border border-gray-400 p-2">${d.pulang}</td><td class="border border-gray-400 p-2">${d.status}</td></tr>`;
+                    });
+                    html += `</tbody></table></div>`;
+                    printArea.innerHTML = html; printArea.classList.remove('hidden');
+                    window.print(); printArea.classList.add('hidden');
+                }
+            } catch (e) { alert("Error API"); }
+            document.body.style.cursor = 'default';
         }
+
+        function logout() { localStorage.clear(); window.location.href = 'login.html'; }
     </script>
 </body>
 </html>
