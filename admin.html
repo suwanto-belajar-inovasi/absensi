@@ -7,106 +7,138 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
-        @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
-        }
+        @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; } }
         .card-id { background-image: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-slate-50 p-6 font-sans text-slate-800">
+<body class="bg-slate-100 p-4 md:p-6 font-sans text-slate-800">
     
-    <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-8 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-            <div class="flex items-center gap-4">
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <header class="flex flex-col md:flex-row justify-between items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex items-center gap-4 mb-4 md:mb-0">
                 <div class="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center text-white font-bold text-xl">BI</div>
                 <div>
                     <h1 class="text-2xl font-extrabold text-blue-900">Dashboard Admin</h1>
-                    <p class="text-slate-500 font-medium text-sm">Sistem Informasi Belajar Inovasi</p>
+                    <p class="text-slate-500 font-medium text-sm">Pusat Kendali Belajar Inovasi</p>
                 </div>
             </div>
-            <div class="flex gap-3">
-                <button onclick="bukaModalUser()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:bg-indigo-700 transition font-bold flex items-center gap-2">➕ Tambah User</button>
-                <button onclick="logout()" class="bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl hover:bg-red-500 hover:text-white transition font-bold">Keluar</button>
+            <div class="flex gap-2 w-full md:w-auto">
+                <a href="index.html" class="flex-1 md:flex-none text-center bg-blue-600 text-white px-5 py-2.5 rounded-xl shadow hover:bg-blue-700 font-bold">📷 Scanner</a>
+                <button onclick="logout()" class="flex-1 md:flex-none bg-red-100 text-red-600 px-5 py-2.5 rounded-xl hover:bg-red-200 font-bold">Keluar</button>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-blue-600">
-                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Hari Ini</p>
-                <h3 class="text-2xl font-black text-gray-800" id="p-today">M: 0 | 0%</h3>
-                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-today">Izin: 0 | Sakit: 0 | Alpha: 0</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-blue-600">
+                <p class="text-[10px] md:text-xs font-bold text-gray-400 uppercase">Hari Ini</p>
+                <h3 class="text-xl md:text-2xl font-black text-gray-800" id="p-today">M:0 | 0%</h3>
+                <p class="text-[10px] text-gray-400 mt-1" id="det-today">I:0 S:0 A:0</p>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-indigo-600">
-                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Minggu Ini</p>
-                <h3 class="text-2xl font-black text-gray-800" id="p-week">M: 0 | 0%</h3>
-                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-week">Izin: 0 | Sakit: 0 | Alpha: 0</p>
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-600">
+                <p class="text-[10px] md:text-xs font-bold text-gray-400 uppercase">Minggu Ini</p>
+                <h3 class="text-xl md:text-2xl font-black text-gray-800" id="p-week">M:0 | 0%</h3>
+                <p class="text-[10px] text-gray-400 mt-1" id="det-week">I:0 S:0 A:0</p>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-emerald-600">
-                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Bulan Ini</p>
-                <h3 class="text-2xl font-black text-gray-800" id="p-month">M: 0 | 0%</h3>
-                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-month">Izin: 0 | Sakit: 0 | Alpha: 0</p>
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-emerald-600">
+                <p class="text-[10px] md:text-xs font-bold text-gray-400 uppercase">Bulan Ini</p>
+                <h3 class="text-xl md:text-2xl font-black text-gray-800" id="p-month">M:0 | 0%</h3>
+                <p class="text-[10px] text-gray-400 mt-1" id="det-month">I:0 S:0 A:0</p>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-orange-600">
-                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Semester Ini</p>
-                <h3 class="text-2xl font-black text-gray-800" id="p-sem">M: 0 | 0%</h3>
-                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-sem">Izin: 0 | Sakit: 0 | Alpha: 0</p>
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-orange-600">
+                <p class="text-[10px] md:text-xs font-bold text-gray-400 uppercase">Semester Ini</p>
+                <h3 class="text-xl md:text-2xl font-black text-gray-800" id="p-sem">M:0 | 0%</h3>
+                <p class="text-[10px] text-gray-400 mt-1" id="det-sem">I:0 S:0 A:0</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 mb-4 text-xl">🪪</div>
-                <h3 class="font-extrabold text-lg mb-1">Cetak Kartu Login Barcode</h3>
-                <p class="text-sm text-slate-500 mb-5">Print ID Card resmi ber-barcode untuk seluruh siswa.</p>
-                <button onclick="cetakKartu()" class="w-full bg-indigo-600 text-white py-3 font-bold rounded-xl hover:bg-indigo-700 transition">Mulai Cetak Kartu</button>
+            
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">⚡</span>
+                    <div>
+                        <h3 class="font-extrabold text-lg">Absensi Manual (Semua User)</h3>
+                        <p class="text-xs text-slate-500">Bypass scanner untuk Siswa/Pegawai.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="manualNis" placeholder="Ketik NIS / ID User..." class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-blue-500 bg-slate-50">
+                    <button onclick="absenManual()" id="btnAbsen" class="bg-blue-600 text-white px-6 font-bold rounded-xl hover:bg-blue-700 shadow-md">Submit</button>
+                </div>
+                <p id="absenRes" class="text-xs font-bold mt-2 hidden"></p>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 mb-4 text-xl">📊</div>
-                <h3 class="font-extrabold text-lg mb-1">Cetak Rekap Absensi</h3>
-                <div class="grid grid-cols-2 gap-3 mb-5 text-sm">
-                    <div><label class="text-xs font-bold text-slate-500">Dari Tanggal</label><input type="date" id="startDate" class="w-full border border-slate-300 p-2.5 rounded-lg mt-1 outline-none focus:border-emerald-500"></div>
-                    <div><label class="text-xs font-bold text-slate-500">Sampai Tanggal</label><input type="date" id="endDate" class="w-full border border-slate-300 p-2.5 rounded-lg mt-1 outline-none focus:border-emerald-500"></div>
-                    <div class="col-span-2"><input type="text" id="filterKelas" placeholder="Pilih Kelas (Kosongkan untuk Semua Kelas)" class="w-full border border-slate-300 p-2.5 rounded-lg outline-none focus:border-emerald-500"></div>
-                </div>
-                <button onclick="cetakRekap()" class="w-full bg-emerald-600 text-white py-3 font-bold rounded-xl hover:bg-emerald-700 transition">Tarik & Cetak PDF</button>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-center">
+                <h3 class="font-extrabold text-lg mb-1">🪪 Cetak Kartu Login Barcode</h3>
+                <p class="text-sm text-slate-500 mb-4">Print ID Card resmi ber-barcode untuk seluruh siswa.</p>
+                <button onclick="cetakKartu()" class="w-full bg-indigo-600 text-white py-3 font-bold rounded-xl hover:bg-indigo-700 shadow-md transition">Mulai Cetak Kartu Massal</button>
             </div>
         </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <div>
+                    <h3 class="font-extrabold text-lg">👥 Manajemen Pengguna</h3>
+                    <p class="text-xs text-slate-500">Data live dari Spreadsheet</p>
+                </div>
+                <button onclick="bukaModalUser()" class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-emerald-200 transition">➕ Tambah User</button>
+            </div>
+            <div class="overflow-x-auto no-scrollbar">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-slate-100 text-slate-600 uppercase text-[10px] font-extrabold">
+                        <tr><th class="p-4">Username / NIS</th><th class="p-4">Nama Lengkap</th><th class="p-4">Role Akun</th><th class="p-4">Akses Kelas</th></tr>
+                    </thead>
+                    <tbody id="userTableBody" class="divide-y divide-slate-100">
+                        <tr><td colspan="4" class="p-4 text-center text-slate-400">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <h3 class="font-extrabold text-lg mb-4">📊 Tarik Laporan Absensi</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                <div><label class="text-xs font-bold text-slate-500">Dari Tanggal</label><input type="date" id="startDate" class="w-full border p-2.5 rounded-lg mt-1 outline-none"></div>
+                <div><label class="text-xs font-bold text-slate-500">Sampai Tanggal</label><input type="date" id="endDate" class="w-full border p-2.5 rounded-lg mt-1 outline-none"></div>
+                <div><label class="text-xs font-bold text-slate-500">Filter Kelas</label><input type="text" id="filterKelas" placeholder="Kosongkan untuk Semua" class="w-full border p-2.5 rounded-lg mt-1 outline-none"></div>
+            </div>
+            <button onclick="cetakRekap()" class="w-full bg-slate-800 text-white py-3 font-bold rounded-xl hover:bg-slate-900 shadow-md">Preview & Cetak PDF</button>
+        </div>
+
     </div>
 
-    <div id="userModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+    <div id="userModal" class="hidden fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all">
         <div class="bg-white p-6 rounded-2xl w-full max-w-md shadow-2xl">
-            <h2 class="text-xl font-extrabold mb-4 text-blue-900">Tambah Pengguna Baru</h2>
+            <h2 class="text-xl font-extrabold mb-4">Tambah Pengguna Baru</h2>
             
             <div class="mb-4">
-                <label class="block text-sm font-bold text-gray-700 mb-1">Role Akun</label>
-                <select id="m-role" onchange="toggleFormRole()" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
-                    <option value="siswa">Siswa</option>
-                    <option value="guru">Guru</option>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Pilih Role</label>
+                <select id="m-role" onchange="toggleFormRole()" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none bg-slate-50 font-bold text-blue-700">
+                    <option value="siswa">Siswa</option><option value="guru">Guru / Pegawai</option>
                 </select>
             </div>
 
             <div class="space-y-3">
-                <input type="text" id="m-id" placeholder="Username / NIS" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="text" id="m-nama" placeholder="Nama Lengkap" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="m-id" placeholder="Username / NIS (Wajib unik)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:border-blue-500">
+                <input type="text" id="m-nama" placeholder="Nama Lengkap" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:border-blue-500">
                 
                 <div id="field-siswa" class="space-y-3">
-                    <input type="text" id="m-kelas-siswa" placeholder="Kelas Siswa (Cth: X-IPA 1)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="number" id="m-wa" placeholder="No WA Ortu (Awali dengan 628...)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="m-kelas-siswa" placeholder="Kelas (Cth: X-IPA 1)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none">
+                    <input type="number" id="m-wa" placeholder="No WA Ortu (Mulai: 628...)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none">
                 </div>
                 
                 <div id="field-guru" class="hidden space-y-3">
-                    <input type="text" id="m-kelas-guru" placeholder="Akses Kelas (Cth: X-IPA 1, X-IPA 2)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="m-kelas-guru" placeholder="Akses Mengajar (Cth: Kelas 5, Kelas 6)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none">
                 </div>
 
-                <input type="password" id="m-pass" placeholder="Password Akun" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="m-pass" placeholder="Password Login" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:border-blue-500">
             </div>
 
             <div class="flex gap-3 mt-6">
-                <button onclick="document.getElementById('userModal').classList.add('hidden')" class="flex-1 bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold hover:bg-slate-300">Batal</button>
-                <button onclick="simpanUser()" id="btnSimpanUser" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-bold hover:bg-blue-700">Simpan Data</button>
+                <button onclick="document.getElementById('userModal').classList.add('hidden')" class="flex-1 bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold">Batal</button>
+                <button onclick="simpanUser()" id="btnSimpanUser" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl font-bold shadow-md hover:bg-emerald-700">Simpan ke Database</button>
             </div>
         </div>
     </div>
@@ -120,49 +152,99 @@
         
         if (!session || session.role !== 'admin') window.location.href = 'login.html';
 
-        // Load Dashboard Data
         window.onload = async () => {
+            loadDashboardStats();
+            loadAllUsers();
+        };
+
+        // 1. Tarik Data Statistik 4 Periode
+        async function loadDashboardStats() {
             try {
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_all_stats', api_key: API_KEY, role: session.role }) });
                 const r = await res.json();
                 if(r.success) {
                     const periods = ['today', 'week', 'month', 'sem'];
                     periods.forEach(p => {
-                        document.getElementById(`p-${p}`).innerText = `M: ${r.data[p].m} | ${r.data[p].p}%`;
-                        document.getElementById(`det-${p}`).innerText = `Izin: ${r.data[p].i} | Sakit: ${r.data[p].s} | Alpha: ${r.data[p].a}`;
+                        document.getElementById(`p-${p}`).innerText = `M:${r.data[p].m} | ${r.data[p].p}%`;
+                        document.getElementById(`det-${p}`).innerText = `I:${r.data[p].i} S:${r.data[p].s} A:${r.data[p].a}`;
                     });
                 }
-            } catch (e) { console.error("Gagal muat stats"); }
-        };
-
-        // Fungsi UI Modal Tambah User
-        function bukaModalUser() { document.getElementById('userModal').classList.remove('hidden'); }
-        function toggleFormRole() {
-            const role = document.getElementById('m-role').value;
-            if (role === 'siswa') {
-                document.getElementById('field-siswa').classList.remove('hidden');
-                document.getElementById('field-guru').classList.add('hidden');
-            } else {
-                document.getElementById('field-siswa').classList.add('hidden');
-                document.getElementById('field-guru').classList.remove('hidden');
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // Fungsi Simpan User ke Spreadsheet via API
+        // 2. Tarik Data Tabel Pengguna
+        async function loadAllUsers() {
+            const tBody = document.getElementById('userTableBody');
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_all_users', api_key: API_KEY }) });
+                const r = await res.json();
+                if(r.success) {
+                    let html = '';
+                    r.data.forEach(u => {
+                        let badgeColor = u.role === 'admin' ? 'bg-red-100 text-red-700' : (u.role === 'guru' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700');
+                        html += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 font-bold text-slate-700">${u.username}</td>
+                            <td class="p-4">${u.nama}</td>
+                            <td class="p-4"><span class="${badgeColor} px-2 py-1 rounded text-[10px] font-bold uppercase">${u.role}</span></td>
+                            <td class="p-4 text-slate-500">${u.kelas_akses}</td>
+                        </tr>`;
+                    });
+                    tBody.innerHTML = html;
+                }
+            } catch (e) { tBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-red-500">Gagal memuat data tabel.</td></tr>'; }
+        }
+
+        // 3. Fitur Absensi Manual Super Admin
+        async function absenManual() {
+            const nis = document.getElementById('manualNis').value;
+            if(!nis) return alert("Masukkan NIS / Username!");
+            
+            const btn = document.getElementById('btnAbsen');
+            const resBox = document.getElementById('absenRes');
+            btn.innerText = "..."; btn.disabled = true; resBox.classList.add('hidden');
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "absen", api_key: API_KEY, nis: nis, role: session.role, session_nis: session.username })
+                });
+                const r = await res.json();
+                
+                resBox.classList.remove('hidden');
+                if(r.success) {
+                    resBox.className = "text-xs font-bold mt-2 text-green-600";
+                    resBox.innerText = "✅ " + r.message;
+                    document.getElementById('manualNis').value = ""; // Clear input
+                    loadDashboardStats(); // Refresh stats otomatis
+                } else {
+                    resBox.className = "text-xs font-bold mt-2 text-red-600";
+                    resBox.innerText = "❌ " + r.message;
+                }
+            } catch(e) { alert("Error koneksi server."); }
+            btn.innerText = "Submit"; btn.disabled = false;
+        }
+
+        // 4. Modal Tambah User
+        function bukaModalUser() { document.getElementById('userModal').classList.remove('hidden'); }
+        function toggleFormRole() {
+            if (document.getElementById('m-role').value === 'siswa') {
+                document.getElementById('field-siswa').classList.remove('hidden'); document.getElementById('field-guru').classList.add('hidden');
+            } else {
+                document.getElementById('field-siswa').classList.add('hidden'); document.getElementById('field-guru').classList.remove('hidden');
+            }
+        }
+        
         async function simpanUser() {
             const role = document.getElementById('m-role').value;
             const btn = document.getElementById('btnSimpanUser');
-            btn.innerText = "Menyimpan..."; btn.disabled = true;
+            btn.innerText = "Processing..."; btn.disabled = true;
 
             const payload = {
-                action: "manage_user", api_key: API_KEY,
-                subAction: role === "siswa" ? "add_siswa" : "add_guru",
-                nis: document.getElementById('m-id').value,           // Digunakan u/ NIS siswa
-                username: document.getElementById('m-id').value,      // Digunakan u/ Username guru
-                nama: document.getElementById('m-nama').value,
-                password: document.getElementById('m-pass').value,
-                kelas: document.getElementById('m-kelas-siswa').value,
-                wa: document.getElementById('m-wa').value,
+                action: "manage_user", api_key: API_KEY, subAction: role === "siswa" ? "add_siswa" : "add_guru",
+                nis: document.getElementById('m-id').value, username: document.getElementById('m-id').value,
+                nama: document.getElementById('m-nama').value, password: document.getElementById('m-pass').value,
+                kelas: document.getElementById('m-kelas-siswa').value, wa: document.getElementById('m-wa').value,
                 kelasAkses: document.getElementById('m-kelas-guru').value
             };
 
@@ -170,12 +252,15 @@
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload)});
                 const r = await res.json();
                 alert(r.message);
-                if(r.success) location.reload();
+                if(r.success) {
+                    document.getElementById('userModal').classList.add('hidden');
+                    loadAllUsers(); // Refresh tabel tanpa reload halaman
+                }
             } catch (e) { alert("Gagal koneksi ke server."); }
-            btn.innerText = "Simpan Data"; btn.disabled = false;
+            btn.innerText = "Simpan ke Database"; btn.disabled = false;
         }
 
-        // Cetak Kartu dengan KOP Belajar Inovasi
+        // 5. Cetak Kartu Ber-Kop Belajar Inovasi
         async function cetakKartu() {
             document.body.style.cursor = 'wait';
             try {
@@ -192,15 +277,13 @@
                                 <div class="leading-tight text-center flex-1">
                                     <h2 class="font-bold text-[9px] uppercase text-slate-700">Yayasan Pendidikan</h2>
                                     <h1 class="font-extrabold text-[13px] text-blue-900 uppercase">BELAJAR INOVASI</h1>
-                                    <p class="text-[6.5px] text-slate-600">Jl. Pendidikan No. 1, Surabaya | Telp: 031-123456</p>
+                                    <p class="text-[6.5px] text-slate-600">Surabaya | Telp: 031-123456</p>
                                 </div>
                             </div>
                             <div class="p-3">
                                 <p class="text-center font-bold text-slate-800 text-[10px] mb-2 uppercase tracking-widest bg-yellow-300 rounded inline-block px-2 mx-auto border border-yellow-400" style="display:block; width:fit-content;">KARTU PELAJAR</p>
                                 <table class="text-[10px] font-bold text-slate-800 w-full mb-1">
-                                    <tr><td class="w-10">Nama</td><td>: ${s.nama}</td></tr>
-                                    <tr><td>NIS</td><td>: ${s.nis}</td></tr>
-                                    <tr><td>Kelas</td><td>: ${s.kelas}</td></tr>
+                                    <tr><td class="w-10">Nama</td><td>: ${s.nama}</td></tr><tr><td>NIS</td><td>: ${s.nis}</td></tr><tr><td>Kelas</td><td>: ${s.kelas}</td></tr>
                                 </table>
                             </div>
                             <div class="absolute bottom-2 left-0 w-full text-center bg-white py-1 border-t border-slate-200">
@@ -213,18 +296,16 @@
                     JsBarcode(".barcode").init();
                     setTimeout(() => { window.print(); printArea.classList.add('hidden'); }, 500);
                 }
-            } catch (e) { alert("Gagal mengambil data"); }
+            } catch (e) { alert("Error API"); }
             document.body.style.cursor = 'default';
         }
 
-        // Cetak Rekap Tabel Laporan
+        // 6. Cetak Rekap Tabel Laporan
         async function cetakRekap() {
-            const start = document.getElementById('startDate').value;
-            const end = document.getElementById('endDate').value;
+            const start = document.getElementById('startDate').value; const end = document.getElementById('endDate').value;
             const kelas = document.getElementById('filterKelas').value || "Semua";
             if(!start || !end) return alert("Pilih tanggal dari dan sampai!");
             document.body.style.cursor = 'wait';
-
             try {
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_rekap', api_key: API_KEY, startDate: start, endDate: end, filterKelas: kelas })});
                 const result = await res.json();
@@ -233,12 +314,12 @@
                     let html = `
                     <div class="p-8 bg-white text-black font-sans">
                         <div class="text-center border-b-4 border-double border-blue-900 pb-4 mb-6">
-                            <h2 class="text-2xl font-extrabold uppercase">Laporan Kehadiran Siswa</h2>
+                            <h2 class="text-2xl font-extrabold uppercase">Laporan Kehadiran</h2>
                             <h3 class="text-lg font-bold">Lembaga Pendidikan Belajar Inovasi</h3>
-                            <p class="text-sm">Periode: ${start} s/d ${end} | Kelas: ${kelas}</p>
+                            <p class="text-sm">Periode: ${start} s/d ${end} | Kelas/Akses: ${kelas}</p>
                         </div>
                         <table class="w-full border-collapse border border-slate-800 text-sm text-left">
-                            <thead><tr class="bg-slate-200"><th class="border border-slate-800 p-2">Tanggal</th><th class="border border-slate-800 p-2">NIS</th><th class="border border-slate-800 p-2">Nama</th><th class="border border-slate-800 p-2">Kelas</th><th class="border border-slate-800 p-2">Masuk</th><th class="border border-slate-800 p-2">Pulang</th><th class="border border-slate-800 p-2">Status</th></tr></thead>
+                            <thead><tr class="bg-slate-200"><th class="border border-slate-800 p-2">Tanggal</th><th class="border border-slate-800 p-2">ID/NIS</th><th class="border border-slate-800 p-2">Nama</th><th class="border border-slate-800 p-2">Kelas</th><th class="border border-slate-800 p-2">In</th><th class="border border-slate-800 p-2">Out</th><th class="border border-slate-800 p-2">Status</th></tr></thead>
                             <tbody>`;
                     result.data.forEach(d => {
                         html += `<tr><td class="border border-slate-800 p-2">${d.tanggal}</td><td class="border border-slate-800 p-2">${d.nis}</td><td class="border border-slate-800 p-2">${d.nama}</td><td class="border border-slate-800 p-2">${d.kelas}</td><td class="border border-slate-800 p-2 text-center font-mono">${d.masuk}</td><td class="border border-slate-800 p-2 text-center font-mono">${d.pulang}</td><td class="border border-slate-800 p-2 font-bold">${d.status}</td></tr>`;
