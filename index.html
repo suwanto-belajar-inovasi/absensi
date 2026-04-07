@@ -7,51 +7,76 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md text-center">
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">Scan Barcode</h1>
-        <div id="reader" class="mb-4 rounded-xl overflow-hidden border-2 border-dashed border-blue-300"></div>
-        <div id="notification" class="hidden p-3 rounded-lg font-bold mb-4"></div>
-        <button onclick="kembaliKeDashboard()" class="text-blue-600 text-sm font-medium hover:underline">← Batal / Kembali ke Dashboard</button>
+<body class="bg-slate-900 min-h-screen flex flex-col items-center justify-center p-4">
+    
+    <div class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-sm text-center relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
+        <h1 class="text-2xl font-extrabold text-gray-800 mb-1 mt-2">Scan ID Card</h1>
+        <p class="text-sm text-gray-500 mb-6">Arahkan barcode ke kotak kamera</p>
+        
+        <div class="relative mb-6 rounded-2xl overflow-hidden border-4 border-slate-100 bg-slate-100 shadow-inner" style="min-height: 250px;">
+            <div id="reader" class="w-full h-full object-cover"></div>
+            <div class="absolute inset-0 pointer-events-none border-[40px] border-black/40"></div>
+            <div class="absolute inset-0 pointer-events-none border-2 border-blue-500 m-10 rounded-lg"></div>
+        </div>
+
+        <div id="notification" class="hidden p-3 rounded-xl font-bold mb-4 text-sm transition-all duration-300"></div>
+        
+        <button onclick="kembaliKeDashboard()" class="w-full py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition">
+            Kembali ke Dashboard
+        </button>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzvIncRef44NK6ayX0F7TSht0qTYVEwZszpzVRxSd7nHOCU01bg3yuuOyI6VbHDG4Oq/exec"; // GANTI INI
+        const API_URL = "https://script.google.com/macros/s/AKfycbzvIncRef44NK6ayX0F7TSht0qTYVEwZszpzVRxSd7nHOCU01bg3yuuOyI6VbHDG4Oq/exec"; 
         const API_KEY = "belajarinovasi_123";
-        let scanner, isProcessing = false;
+        let html5QrCode;
+        let isProcessing = false;
 
         function kembaliKeDashboard() {
+            if(html5QrCode) html5QrCode.stop().catch(err => console.log(err));
             const session = JSON.parse(localStorage.getItem('userSession'));
             if(session) window.location.href = session.role + '.html';
             else window.location.href = 'login.html';
         }
 
         window.onload = () => {
-            scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }, false);
-            scanner.render(async (text) => {
+            html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+
+            // Memaksa kamera belakang (environment)
+            html5QrCode.start({ facingMode: "environment" }, config, async (decodedText) => {
                 if (isProcessing) return;
-                isProcessing = true; scanner.pause(true);
+                isProcessing = true; 
+                html5QrCode.pause(); // Hentikan scan sementara
                 
                 const notif = document.getElementById('notification');
-                notif.className = "p-3 rounded-lg font-bold mb-4 bg-blue-100 text-blue-800 block";
-                notif.innerText = "Memproses...";
+                notif.className = "p-3 rounded-xl font-bold mb-4 bg-blue-100 text-blue-800 block border border-blue-200";
+                notif.innerText = "⏳ Memproses Data...";
 
                 try {
                     const res = await fetch(API_URL, {
                         method: "POST",
-                        body: JSON.stringify({ action: "absen", api_key: API_KEY, nis: text })
+                        body: JSON.stringify({ action: "absen", api_key: API_KEY, nis: decodedText })
                     });
                     const result = await res.json();
 
-                    notif.className = `p-3 rounded-lg font-bold mb-4 block ${result.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
-                    notif.innerText = result.message;
+                    notif.className = `p-3 rounded-xl font-bold mb-4 block border ${result.success ? 'bg-green-100 text-green-800 border-green-300' : 'bg-red-100 text-red-800 border-red-300'}`;
+                    notif.innerText = result.success ? `✅ ${result.message}` : `❌ ${result.message}`;
 
-                    if(result.success) setTimeout(kembaliKeDashboard, 2000);
-                    else setTimeout(() => { isProcessing = false; scanner.resume(); notif.classList.add('hidden'); }, 3000);
+                    if(result.success) {
+                        setTimeout(kembaliKeDashboard, 2000);
+                    } else {
+                        setTimeout(() => { isProcessing = false; html5QrCode.resume(); notif.classList.add('hidden'); }, 3000);
+                    }
                 } catch(e) {
-                    notif.innerText = "Gagal server.";
-                    setTimeout(() => { isProcessing = false; scanner.resume(); }, 3000);
+                    notif.className = "p-3 rounded-xl font-bold mb-4 bg-red-100 text-red-800 block border border-red-300";
+                    notif.innerText = "❌ Gagal terhubung ke server.";
+                    setTimeout(() => { isProcessing = false; html5QrCode.resume(); notif.classList.add('hidden'); }, 3000);
                 }
+            }).catch(err => {
+                document.getElementById('notification').className = "p-3 rounded-xl font-bold mb-4 bg-red-100 text-red-800 block";
+                document.getElementById('notification').innerText = "Mohon izinkan akses kamera di browser Anda.";
             });
         };
     </script>
