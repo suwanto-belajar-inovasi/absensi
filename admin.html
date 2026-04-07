@@ -23,26 +23,35 @@
                 <div class="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center text-white font-bold text-xl">BI</div>
                 <div>
                     <h1 class="text-2xl font-extrabold text-blue-900">Dashboard Admin</h1>
-                    <p class="text-slate-500 font-medium text-sm">Belajar Inovasi System</p>
+                    <p class="text-slate-500 font-medium text-sm">Sistem Informasi Belajar Inovasi</p>
                 </div>
             </div>
             <div class="flex gap-3">
-                <a href="index.html" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:bg-blue-700 transition font-bold flex items-center gap-2">📷 Buka Scanner</a>
+                <button onclick="bukaModalUser()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:bg-indigo-700 transition font-bold flex items-center gap-2">➕ Tambah User</button>
                 <button onclick="logout()" class="bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl hover:bg-red-500 hover:text-white transition font-bold">Keluar</button>
             </div>
         </header>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="statsContainer">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-blue-500"><p class="text-sm text-slate-500 font-bold mb-1">Total Pegawai</p><h3 class="text-3xl font-black" id="statPegawai">-</h3></div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-indigo-500"><p class="text-sm text-slate-500 font-bold mb-1">Total Siswa</p><h3 class="text-3xl font-black" id="statSiswa">-</h3></div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-emerald-500"><p class="text-sm text-slate-500 font-bold mb-1">Hari Aktif</p><h3 class="text-3xl font-black" id="statHari">-</h3></div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-b-4 border-b-orange-500">
-                <p class="text-sm text-slate-500 font-bold mb-1">Persentase Kehadiran</p>
-                <div class="flex gap-2 mt-2">
-                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold" id="statMasuk">M: -%</span>
-                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold" id="statIzin">I: -%</span>
-                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded font-bold" id="statAlpha">A: -%</span>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-blue-600">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Hari Ini</p>
+                <h3 class="text-2xl font-black text-gray-800" id="p-today">M: 0 | 0%</h3>
+                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-today">Izin: 0 | Sakit: 0 | Alpha: 0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-indigo-600">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Minggu Ini</p>
+                <h3 class="text-2xl font-black text-gray-800" id="p-week">M: 0 | 0%</h3>
+                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-week">Izin: 0 | Sakit: 0 | Alpha: 0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-emerald-600">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Bulan Ini</p>
+                <h3 class="text-2xl font-black text-gray-800" id="p-month">M: 0 | 0%</h3>
+                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-month">Izin: 0 | Sakit: 0 | Alpha: 0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-orange-600">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-1">Semester Ini</p>
+                <h3 class="text-2xl font-black text-gray-800" id="p-sem">M: 0 | 0%</h3>
+                <p class="text-[11px] text-gray-400 font-semibold mt-1" id="det-sem">Izin: 0 | Sakit: 0 | Alpha: 0</p>
             </div>
         </div>
 
@@ -50,7 +59,7 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 mb-4 text-xl">🪪</div>
                 <h3 class="font-extrabold text-lg mb-1">Cetak Kartu Login Barcode</h3>
-                <p class="text-sm text-slate-500 mb-5">Print ID Card resmi ber-barcode untuk siswa.</p>
+                <p class="text-sm text-slate-500 mb-5">Print ID Card resmi ber-barcode untuk seluruh siswa.</p>
                 <button onclick="cetakKartu()" class="w-full bg-indigo-600 text-white py-3 font-bold rounded-xl hover:bg-indigo-700 transition">Mulai Cetak Kartu</button>
             </div>
 
@@ -67,6 +76,41 @@
         </div>
     </div>
 
+    <div id="userModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white p-6 rounded-2xl w-full max-w-md shadow-2xl">
+            <h2 class="text-xl font-extrabold mb-4 text-blue-900">Tambah Pengguna Baru</h2>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-1">Role Akun</label>
+                <select id="m-role" onchange="toggleFormRole()" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
+                    <option value="siswa">Siswa</option>
+                    <option value="guru">Guru</option>
+                </select>
+            </div>
+
+            <div class="space-y-3">
+                <input type="text" id="m-id" placeholder="Username / NIS" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="m-nama" placeholder="Nama Lengkap" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                
+                <div id="field-siswa" class="space-y-3">
+                    <input type="text" id="m-kelas-siswa" placeholder="Kelas Siswa (Cth: X-IPA 1)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="number" id="m-wa" placeholder="No WA Ortu (Awali dengan 628...)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div id="field-guru" class="hidden space-y-3">
+                    <input type="text" id="m-kelas-guru" placeholder="Akses Kelas (Cth: X-IPA 1, X-IPA 2)" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <input type="password" id="m-pass" placeholder="Password Akun" class="w-full border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="document.getElementById('userModal').classList.add('hidden')" class="flex-1 bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold hover:bg-slate-300">Batal</button>
+                <button onclick="simpanUser()" id="btnSimpanUser" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-bold hover:bg-blue-700">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
     <div id="printArea" class="hidden bg-white"></div>
 
     <script>
@@ -76,29 +120,67 @@
         
         if (!session || session.role !== 'admin') window.location.href = 'login.html';
 
-        // 1. Muat Dashboard Stats Saat Buka Halaman
+        // Load Dashboard Data
         window.onload = async () => {
             try {
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_dashboard_admin', api_key: API_KEY }) });
-                const result = await res.json();
-                if(result.success) {
-                    document.getElementById('statPegawai').innerText = result.data.totalPegawai;
-                    document.getElementById('statSiswa').innerText = result.data.totalSiswa;
-                    document.getElementById('statHari').innerText = result.data.hariAktif;
-                    document.getElementById('statMasuk').innerText = `M: ${result.data.persentase.masuk}%`;
-                    document.getElementById('statIzin').innerText = `I: ${result.data.persentase.izin}%`;
-                    document.getElementById('statAlpha').innerText = `A: ${result.data.persentase.alpha}%`;
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_all_stats', api_key: API_KEY, role: session.role }) });
+                const r = await res.json();
+                if(r.success) {
+                    const periods = ['today', 'week', 'month', 'sem'];
+                    periods.forEach(p => {
+                        document.getElementById(`p-${p}`).innerText = `M: ${r.data[p].m} | ${r.data[p].p}%`;
+                        document.getElementById(`det-${p}`).innerText = `Izin: ${r.data[p].i} | Sakit: ${r.data[p].s} | Alpha: ${r.data[p].a}`;
+                    });
                 }
-            } catch (e) { console.log("Gagal muat stats"); }
+            } catch (e) { console.error("Gagal muat stats"); }
         };
 
-        // 2. FUNGSI CETAK KARTU (KOP LEMBAGA BARU)
+        // Fungsi UI Modal Tambah User
+        function bukaModalUser() { document.getElementById('userModal').classList.remove('hidden'); }
+        function toggleFormRole() {
+            const role = document.getElementById('m-role').value;
+            if (role === 'siswa') {
+                document.getElementById('field-siswa').classList.remove('hidden');
+                document.getElementById('field-guru').classList.add('hidden');
+            } else {
+                document.getElementById('field-siswa').classList.add('hidden');
+                document.getElementById('field-guru').classList.remove('hidden');
+            }
+        }
+
+        // Fungsi Simpan User ke Spreadsheet via API
+        async function simpanUser() {
+            const role = document.getElementById('m-role').value;
+            const btn = document.getElementById('btnSimpanUser');
+            btn.innerText = "Menyimpan..."; btn.disabled = true;
+
+            const payload = {
+                action: "manage_user", api_key: API_KEY,
+                subAction: role === "siswa" ? "add_siswa" : "add_guru",
+                nis: document.getElementById('m-id').value,           // Digunakan u/ NIS siswa
+                username: document.getElementById('m-id').value,      // Digunakan u/ Username guru
+                nama: document.getElementById('m-nama').value,
+                password: document.getElementById('m-pass').value,
+                kelas: document.getElementById('m-kelas-siswa').value,
+                wa: document.getElementById('m-wa').value,
+                kelasAkses: document.getElementById('m-kelas-guru').value
+            };
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload)});
+                const r = await res.json();
+                alert(r.message);
+                if(r.success) location.reload();
+            } catch (e) { alert("Gagal koneksi ke server."); }
+            btn.innerText = "Simpan Data"; btn.disabled = false;
+        }
+
+        // Cetak Kartu dengan KOP Belajar Inovasi
         async function cetakKartu() {
             document.body.style.cursor = 'wait';
             try {
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa_by_kelas', api_key: API_KEY, kelas_akses: 'Semua' })});
                 const result = await res.json();
-                
                 if(result.success) {
                     const printArea = document.getElementById('printArea');
                     let html = `<div class="p-4" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">`;
@@ -135,18 +217,17 @@
             document.body.style.cursor = 'default';
         }
 
-        // FUNGSI CETAK REKAP TABEL
+        // Cetak Rekap Tabel Laporan
         async function cetakRekap() {
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
             const kelas = document.getElementById('filterKelas').value || "Semua";
-            if(!start || !end) return alert("Pilih tanggal!");
+            if(!start || !end) return alert("Pilih tanggal dari dan sampai!");
             document.body.style.cursor = 'wait';
 
             try {
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_rekap', api_key: API_KEY, startDate: start, endDate: end, filterKelas: kelas })});
                 const result = await res.json();
-
                 if(result.success) {
                     const printArea = document.getElementById('printArea');
                     let html = `
@@ -166,7 +247,7 @@
                     printArea.innerHTML = html; printArea.classList.remove('hidden');
                     window.print(); printArea.classList.add('hidden');
                 }
-            } catch (e) { alert("Error API"); }
+            } catch (e) { alert("Error Server API"); }
             document.body.style.cursor = 'default';
         }
 
