@@ -3,86 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - Sistem Absensi</title>
+    <title>Admin - Belajar Inovasi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
-
-    <div class="flex h-screen overflow-hidden">
-        <aside class="w-64 bg-slate-800 text-white flex flex-col hidden md:flex">
-            <div class="h-16 flex items-center justify-center border-b border-slate-700">
-                <h1 class="text-xl font-bold tracking-wider">PANEL ADMIN</h1>
+<body class="bg-gray-50 p-6 font-sans">
+    
+    <div class="max-w-5xl mx-auto">
+        <header class="flex justify-between items-center mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Panel Admin</h1>
+                <p class="text-gray-500" id="userName">Belajar Inovasi</p>
             </div>
-            <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="#" class="flex items-center px-4 py-3 bg-blue-600 rounded-lg text-white font-medium">
-                    <span>📊 Dashboard</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition">
-                    <span>👥 Data Siswa</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition">
-                    <span>📅 Laporan Absensi</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition">
-                    <span>⚙️ Pengaturan</span>
-                </a>
-            </nav>
-            <div class="p-4 border-t border-slate-700">
-                <button onclick="logout()" class="w-full flex items-center justify-center px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition">
-                    <span>🚪 Keluar</span>
-                </button>
+            <div class="flex gap-2">
+                <a href="index.html" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">📷 Buka Scanner</a>
+                <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600">Keluar</button>
             </div>
-        </aside>
+        </header>
 
-        <div class="flex-1 flex flex-col overflow-y-auto">
-            <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6">
-                <h2 class="text-xl font-semibold text-gray-800">Ringkasan Hari Ini</h2>
-                <div class="flex items-center gap-3">
-                    <span class="text-sm text-gray-500" id="adminName">Loading...</span>
-                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold">A</div>
-                </div>
-            </header>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-lg mb-2">🪪 Cetak Kartu Login Barcode</h3>
+                <p class="text-sm text-gray-500 mb-4">Print kartu ID siswa dengan barcode terintegrasi.</p>
+                <button onclick="cetakKartu()" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Cetak Semua Kartu Siswa</button>
+            </div>
 
-            <main class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
-                        <p class="text-sm text-gray-500 font-medium">Total Siswa</p>
-                        <h3 class="text-3xl font-bold text-gray-800 mt-2">150</h3>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-green-500">
-                        <p class="text-sm text-gray-500 font-medium">Hadir Hari Ini</p>
-                        <h3 class="text-3xl font-bold text-gray-800 mt-2">142</h3>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-red-500">
-                        <p class="text-sm text-gray-500 font-medium">Terlambat/Alpa</p>
-                        <h3 class="text-3xl font-bold text-gray-800 mt-2">8</h3>
-                    </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-lg mb-2">📊 Cetak Rekap Absensi</h3>
+                <div class="grid grid-cols-2 gap-2 mb-4 text-sm">
+                    <input type="date" id="startDate" class="border p-2 rounded" title="Dari Tanggal">
+                    <input type="date" id="endDate" class="border p-2 rounded" title="Sampai Tanggal">
+                    <input type="text" id="filterKelas" placeholder="Kelas (kosong=Semua)" class="border p-2 rounded col-span-2">
                 </div>
-
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Log Absensi Terbaru</h3>
-                    <p class="text-gray-500 text-sm italic">Tabel data real-time akan ditambahkan di tahap integrasi API selanjutnya.</p>
-                </div>
-            </main>
+                <button onclick="cetakRekap()" class="w-full bg-emerald-600 text-white py-2 rounded hover:bg-emerald-700">Tarik Data & Cetak Tabel</button>
+            </div>
         </div>
     </div>
 
+    <div id="printArea" class="hidden bg-white"></div>
+
     <script>
-        // --- SESSION GUARD ---
+        const API_URL = "https://script.google.com/macros/s/AKfycbzvIncRef44NK6ayX0F7TSht0qTYVEwZszpzVRxSd7nHOCU01bg3yuuOyI6VbHDG4Oq/exec"; 
+        const API_KEY = "belajarinovasi_123";
         const session = JSON.parse(localStorage.getItem('userSession'));
-        if (!session || session.role !== 'admin') {
-            alert("Akses ditolak! Silakan login sebagai Admin.");
-            window.location.href = 'login.html'; // Lempar kembali ke login
-        } else {
-            // Tampilkan nama admin
-            document.getElementById('adminName').innerText = session.identitas;
+        
+        if (!session || session.role !== 'admin') window.location.href = 'login.html';
+        document.getElementById('userName').innerText = session.identitas;
+
+        // FUNGSI CETAK KARTU BARCODE
+        async function cetakKartu() {
+            document.body.style.cursor = 'wait';
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa_by_kelas', api_key: API_KEY, kelas_akses: 'Semua' })});
+                const result = await res.json();
+                
+                if(result.success) {
+                    const printArea = document.getElementById('printArea');
+                    let html = `<div class="grid grid-cols-2 gap-4 p-4">`;
+                    result.data.forEach(s => {
+                        html += `
+                        <div class="border-2 border-gray-800 p-4 rounded-xl w-[85mm] h-[55mm] inline-block" style="page-break-inside: avoid;">
+                            <h3 class="text-center font-bold text-sm">KARTU PELAJAR</h3>
+                            <p class="text-xs">Nama: ${s.nama}<br>Kelas: ${s.kelas}<br>NIS: ${s.nis}</p>
+                            <svg class="barcode w-full h-12 mt-2" jsbarcode-value="${s.nis}" jsbarcode-displayvalue="false"></svg>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                    printArea.innerHTML = html; printArea.classList.remove('hidden');
+                    JsBarcode(".barcode").init();
+                    setTimeout(() => { window.print(); printArea.classList.add('hidden'); }, 500);
+                }
+            } catch (e) { alert("Gagal mengambil data"); }
+            document.body.style.cursor = 'default';
         }
 
-        // Fungsi Logout
-        function logout() {
-            localStorage.removeItem('userSession');
-            window.location.href = 'login.html';
+        // FUNGSI CETAK REKAP TABEL
+        async function cetakRekap() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            const kelas = document.getElementById('filterKelas').value || "Semua";
+
+            if(!start || !end) return alert("Pilih tanggal awal dan akhir!");
+            document.body.style.cursor = 'wait';
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_rekap', api_key: API_KEY, startDate: start, endDate: end, filterKelas: kelas })});
+                const result = await res.json();
+
+                if(result.success) {
+                    const printArea = document.getElementById('printArea');
+                    let html = `
+                    <div class="p-8">
+                        <h2 class="text-2xl font-bold mb-4 text-center">Laporan Absensi (Belajar Inovasi)</h2>
+                        <p class="mb-4 text-center">Periode: ${start} s/d ${end} | Kelas: ${kelas}</p>
+                        <table class="w-full border-collapse border border-gray-400 text-sm text-left">
+                            <thead><tr class="bg-gray-100"><th class="border border-gray-400 p-2">Tanggal</th><th class="border border-gray-400 p-2">NIS</th><th class="border border-gray-400 p-2">Nama</th><th class="border border-gray-400 p-2">Kelas</th><th class="border border-gray-400 p-2">In</th><th class="border border-gray-400 p-2">Out</th><th class="border border-gray-400 p-2">Status</th></tr></thead>
+                            <tbody>`;
+                    result.data.forEach(d => {
+                        html += `<tr><td class="border border-gray-400 p-2">${d.tanggal}</td><td class="border border-gray-400 p-2">${d.nis}</td><td class="border border-gray-400 p-2">${d.nama}</td><td class="border border-gray-400 p-2">${d.kelas}</td><td class="border border-gray-400 p-2">${d.masuk}</td><td class="border border-gray-400 p-2">${d.pulang}</td><td class="border border-gray-400 p-2">${d.status}</td></tr>`;
+                    });
+                    html += `</tbody></table></div>`;
+                    
+                    printArea.innerHTML = html; printArea.classList.remove('hidden');
+                    window.print(); printArea.classList.add('hidden');
+                }
+            } catch (e) { alert("Gagal mengambil data"); }
+            document.body.style.cursor = 'default';
         }
+
+        function logout() { localStorage.clear(); window.location.href = 'login.html'; }
     </script>
 </body>
 </html>
